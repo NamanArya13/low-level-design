@@ -12,16 +12,18 @@ public class Bill extends BaseModel {
 
     private Date exitTime;
     private int totalAmount;
-    private Ticket ticket;
-    private Gate exitGate;
+    private int ticketId;
+    private int exitGateId;
     private List<Payment> payment;
+    private int operatorId;
 
-    public Bill(int id, Date exitTime, int totalAmount, Ticket ticket, Gate exitGate, List<Payment> payment) {
+    public Bill(int id, Date exitTime, int totalAmount, int ticketId, int exitGate, int operatorId,List<Payment> payment) {
         super(id);
         this.exitTime = exitTime;
         this.totalAmount = totalAmount;
-        this.ticket = ticket;
-        this.exitGate = exitGate;
+        this.ticketId = ticketId;
+        this.exitGateId = exitGate;
+        this.operatorId = operatorId;
         this.payment = payment;
     }
 }

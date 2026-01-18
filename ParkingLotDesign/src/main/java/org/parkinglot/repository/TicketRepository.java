@@ -4,6 +4,7 @@ import org.parkinglot.model.Ticket;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class TicketRepository {
@@ -21,5 +22,9 @@ public class TicketRepository {
         ticket.setEntryTime(Calendar.getInstance().getTime());
         ticketMap.put(ticket.getId(),ticket);
         return ticket;
+    }
+
+    public Optional<Ticket> findById(int ticketId){
+        return Optional.ofNullable(ticketMap.get(ticketId));
     }
 }
