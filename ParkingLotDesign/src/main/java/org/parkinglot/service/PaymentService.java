@@ -22,11 +22,11 @@ public class PaymentService implements IPaymentService{
     private final PaymentRepository paymentRepository;
 
     public PaymentService(PaymentStrategy paymentStrategy, BillRepository billRepository, PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
         paymentStrategyMap = new HashMap<>();
         paymentStrategyMap.put(PaymentType.CASH,new CashPayment());
         paymentStrategyMap.put(PaymentType.UPI,new UPIPayment());
         this.billRepository = billRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Override

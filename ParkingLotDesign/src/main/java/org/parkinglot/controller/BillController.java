@@ -8,12 +8,13 @@ import org.parkinglot.service.IPaymentService;
 
 public class BillController {
 
-    private IExitService exitService;
+    private final IExitService exitService;
 
-    private IPaymentService paymentService;
+    private final IPaymentService paymentService;
 
-    public BillController(IExitService exitService){
+    public BillController(IExitService exitService, IPaymentService paymentService){
         this.exitService = exitService;
+        this.paymentService = paymentService;
     }
 
     public ExitResponseDto requestExit(ExitRequestDto exitRequestDto){

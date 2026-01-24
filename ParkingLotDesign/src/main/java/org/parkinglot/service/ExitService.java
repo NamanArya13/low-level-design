@@ -1,24 +1,21 @@
 package org.parkinglot.service;
 
-import org.parkinglot.model.*;
+import org.parkinglot.model.Bill;
+import org.parkinglot.model.Ticket;
 import org.parkinglot.repository.TicketRepository;
-import org.parkinglot.repository.VehicleRepository;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Optional;
 
 public class ExitService implements IExitService{
 
     private static final long BASE_PAY = 50;
-    private final VehicleRepository vehicleRepository;
     private final TicketRepository ticketRepository;
     private static int billCounter = 1;
 
-    public ExitService(VehicleRepository vehicleRepository, TicketRepository ticketRepository) {
-        this.vehicleRepository = vehicleRepository;
+    public ExitService( TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
 
@@ -27,25 +24,8 @@ public class ExitService implements IExitService{
         Ticket ticket = getTicketById(ticketId);
         int amount = (int) calculateAmount(ticket);
         int billId = billCounter++;
-        //List<Payment> paymentsList = getPaymentList(payments,billId);
         return new Bill(billId, Calendar.getInstance().getTime(),amount,ticketId,exitGateId,operatorId,new ArrayList<>());
     }
-
-//    private List<Payment> getPaymentList(String payments,int billId) {
-//        String[] paymentsArray = payments.split(",");
-//        List<Payment> paymentsList = new ArrayList<>();
-//        for(String payment: paymentsArray){
-//            try {
-//                PaymentType type = PaymentType.valueOf(payment.toUpperCase());
-//                paymentsList.add(
-//                        new Payment(1, type, billId, "34", PaymentStatus.IN_PROGRESS)
-//                );
-//            } catch (IllegalArgumentException e) {
-//                throw new RuntimeException("Invalid Payment type!");
-//            }
-//        }
-//        return paymentsList;
-//    }
 
     private long calculateAmount(Ticket ticket) {
         Duration duration = Duration.between(ticket.getEntryTime().toInstant(), Calendar.getInstance().getTime().toInstant());

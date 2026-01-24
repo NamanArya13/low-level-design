@@ -8,7 +8,7 @@ import org.parkinglot.service.ITicketService;
 
 public class TicketController {
 
-    private ITicketService ticketService;
+    private final ITicketService ticketService;
 
     public TicketController(ITicketService ticketService){
         this.ticketService = ticketService;

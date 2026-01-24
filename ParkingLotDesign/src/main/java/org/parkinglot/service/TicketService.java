@@ -7,7 +7,7 @@ import org.parkinglot.repository.VehicleRepository;
 
 import java.util.Optional;
 
-public class TicketService implements ITicketService{
+public class TicketService implements ITicketService {
 
     private final GateRepository gateRepository;
     private final VehicleRepository vehicleRepository;
@@ -20,31 +20,45 @@ public class TicketService implements ITicketService{
         this.ticketRepository = ticketRepository;
     }
 
-    public Ticket issueTicket(String licensePlate,
-                              int entryGateId, int operatorId,
-                              VehicleType type) {
-        // Obtain gate from gate ID
+    public Ticket issueTicket(String licensePlate, int entryGateId, int operatorId, VehicleType type) {
+        Gate gate = getGate(entryGateId, operatorId);
+        Vehicle vehicle = getOrCreateVehicle(licensePlate, type);
+        ParkingSlot parkingSlot = allocateParkingSlot(type);
+
+        return createAndSaveTicket(gate, vehicle, parkingSlot);
+    }
+
+    private Gate getGate(int entryGateId, int operatorId) {
         Optional<Gate> optionalGate = gateRepository.findById(entryGateId);
-        if (optionalGate.isEmpty()){
+        if (optionalGate.isEmpty()) {
             throw new RuntimeException("Gate not found");
         }
         Gate gate = optionalGate.get();
         gate.getOperator().setId(operatorId);
-        // Validate and save the vehicle
-        Vehicle vehicle = null;
+        return gate;
+    }
+
+    private Vehicle getOrCreateVehicle(String licensePlate, VehicleType type) {
         Optional<Vehicle> vehicleOptional = vehicleRepository.findByLicensePlate(licensePlate);
-        if (vehicleOptional.isEmpty()){
-            vehicleRepository.save(licensePlate,type);
-        }else{
-            vehicle = vehicleOptional.get();
+        if (vehicleOptional.isEmpty()) {
+            vehicleRepository.save(licensePlate, type);
+            return vehicleRepository.findByLicensePlate(licensePlate).orElseThrow(() ->
+                    new RuntimeException("Failed to save or retrieve vehicle"));
+        } else {
+            return vehicleOptional.get();
         }
-        // Assign slot
+    }
+
+    private ParkingSlot allocateParkingSlot(VehicleType type) {
         ParkingLot parkingLot = ParkingLot.getParkingLotInstance();
         ParkingSlot parkingSlot = parkingLot.getSlotAllocationStrategy().allocateParkingSlot(type);
-        if (parkingSlot == null){
+        if (parkingSlot == null) {
             throw new RuntimeException("No parking slots available!");
         }
+        return parkingSlot;
+    }
 
+    private Ticket createAndSaveTicket(Gate gate, Vehicle vehicle, ParkingSlot parkingSlot) {
         Ticket ticket = new Ticket(counter++);
         ticket.setEntryGate(gate);
         ticket.setVehicle(vehicle);
