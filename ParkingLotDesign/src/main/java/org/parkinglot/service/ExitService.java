@@ -23,30 +23,29 @@ public class ExitService implements IExitService{
     }
 
     @Override
-    public Bill generateExitBill(int ticketId,int exitGateId, int operatorId,String payments) {
+    public Bill generateExitBill(int ticketId,int exitGateId, int operatorId) {
         Ticket ticket = getTicketById(ticketId);
         int amount = (int) calculateAmount(ticket);
-        List<Payment> paymentsList = getPaymentList(payments);
-        Bill bill = new Bill(billCounter++, Calendar.getInstance().getTime(),amount,ticketId,exitGateId,operatorId,paymentsList);
-        for(Payment payment: paymentsList) payment.setBill(bill);
-        return bill;
+        int billId = billCounter++;
+        //List<Payment> paymentsList = getPaymentList(payments,billId);
+        return new Bill(billId, Calendar.getInstance().getTime(),amount,ticketId,exitGateId,operatorId,new ArrayList<>());
     }
 
-    private List<Payment> getPaymentList(String payments) {
-        String[] paymentsArray = payments.split(",");
-        List<Payment> paymentsList = new ArrayList<>();
-        for(String payment: paymentsArray){
-            try {
-                PaymentType type = PaymentType.valueOf(payment.toUpperCase());
-                paymentsList.add(
-                        new Payment(1, type, null, "34", PaymentStatus.IN_PROGRESS)
-                );
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Invalid Payment type!");
-            }
-        }
-        return paymentsList;
-    }
+//    private List<Payment> getPaymentList(String payments,int billId) {
+//        String[] paymentsArray = payments.split(",");
+//        List<Payment> paymentsList = new ArrayList<>();
+//        for(String payment: paymentsArray){
+//            try {
+//                PaymentType type = PaymentType.valueOf(payment.toUpperCase());
+//                paymentsList.add(
+//                        new Payment(1, type, billId, "34", PaymentStatus.IN_PROGRESS)
+//                );
+//            } catch (IllegalArgumentException e) {
+//                throw new RuntimeException("Invalid Payment type!");
+//            }
+//        }
+//        return paymentsList;
+//    }
 
     private long calculateAmount(Ticket ticket) {
         Duration duration = Duration.between(ticket.getEntryTime().toInstant(), Calendar.getInstance().getTime().toInstant());

@@ -5,5 +5,5 @@ import org.parkinglot.model.Ticket;
 
 public interface IExitService {
 
-    Bill generateExitBill(int ticketId,int exitGateId,int operatorId,String payments);
+    Bill generateExitBill(int ticketId,int exitGateId,int operatorId);
 }
