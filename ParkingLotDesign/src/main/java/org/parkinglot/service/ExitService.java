@@ -1,6 +1,8 @@
 package org.parkinglot.service;
 
 import org.parkinglot.model.Bill;
+import org.parkinglot.model.ParkingSlot;
+import org.parkinglot.model.Status;
 import org.parkinglot.model.Ticket;
 import org.parkinglot.repository.TicketRepository;
 
@@ -22,6 +24,8 @@ public class ExitService implements IExitService{
     @Override
     public Bill generateExitBill(int ticketId,int exitGateId, int operatorId) {
         Ticket ticket = getTicketById(ticketId);
+        ParkingSlot parkingSlot = ticket.getSlot();
+        parkingSlot.setStatus(Status.AVAILABLE);
         int amount = (int) calculateAmount(ticket);
         int billId = billCounter++;
         return new Bill(billId, Calendar.getInstance().getTime(),amount,ticketId,exitGateId,operatorId,new ArrayList<>());
