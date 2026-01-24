@@ -24,7 +24,6 @@ public class TicketService implements ITicketService {
         Gate gate = getGate(entryGateId, operatorId);
         Vehicle vehicle = getOrCreateVehicle(licensePlate, type);
         ParkingSlot parkingSlot = allocateParkingSlot(type);
-
         return createAndSaveTicket(gate, vehicle, parkingSlot);
     }
 

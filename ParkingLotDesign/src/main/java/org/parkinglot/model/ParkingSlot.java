@@ -11,8 +11,25 @@ public class ParkingSlot extends BaseModel {
     private Status status;
     // if a slot can support multiple vehicles, we convert this to a list
     private VehicleType vehicleType;
+    private String parkingFloorNumber;
 
     public ParkingSlot(int id) {
         super(id);
+    }
+
+    public synchronized boolean tryOccupy() {
+        if (status == Status.AVAILABLE) {
+            status = Status.FULL;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean free() {
+        if (status == Status.FULL) {
+            status = Status.AVAILABLE;
+            return true;
+        }
+        return false;
     }
 }

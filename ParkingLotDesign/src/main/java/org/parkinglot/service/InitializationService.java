@@ -50,6 +50,7 @@ public class InitializationService {
             for (int j = 0; j < 10; j++) {
                 ParkingSlot slot = getParkingSlot(j, i);
                 floor.getParkingSlotList().add(slot);
+                slot.setParkingFloorNumber(floor.getNumber());
                 parkingLotCapacity++;
             }
             parkingLot.getParkingFloorList().add(floor);
